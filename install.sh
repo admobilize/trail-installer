@@ -57,7 +57,7 @@ check_pip () {
 
 install_pipenv () {
 	echo "Installing pipenv.."
-	pip install --user pipenv
+	python -m pip install --user pipenv
 }
 
 create_pipfile () {
