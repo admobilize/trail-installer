@@ -75,7 +75,8 @@ EOF
 install_trail () {
 	OLD_DIR=$(pwd)
 	mkdir -p $BUILD_DIR && cd $BUILD_DIR
-	pipenv install --python $REQUIRED_PYTHON_VERSION trail-core
+    PYTHON_BINARIES_PATH="$(python -m site --user-base)/bin"
+	$PYTHON_BINARIES_PATH/pipenv install --python $REQUIRED_PYTHON_VERSION trail-core
 	array=("$PIPENV_BASH_LINE_1" "$PIPENV_BASH_LINE_2")
 	for LINE in "${array[@]}"; do
 		if ! grep -Fxq "$LINE" $PROFILE_FILE
