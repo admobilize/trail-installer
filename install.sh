@@ -32,7 +32,8 @@ install_pyenv () {
 	if ! command -v pyenv 1>/dev/null
 	then
 		echo "Installing pyenv..."
-		curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+		curl -L https://raw.githubusercontent.com/matrix-io/trail-installer/master/pyenv-installer.sh | bash 1>/dev/null 2>&1
+        echo "Done"
 	fi
 	array=("$PYENV_BASH_LINE_1" "$PYENV_BASH_LINE_2" "$PYENV_BASH_LINE_3")
 	for LINE in "${array[@]}"; do
