@@ -6,6 +6,18 @@ REQUIRED_PYTHON_VERSION="3.7"
 TRAIL_CONFIG_DIR=$HOME/.config/trailcli
 BUILD_DIR=$TRAIL_CONFIG_DIR/build
 
+
+if command -v python3 1>/dev/null
+then
+    PYTHON=$(which python3)
+elif command -v python2 1>/dev/null
+then
+    PYTHON=$(which python2)
+else
+    echo "Python not not found."
+    exit 1
+fi
+
 if [ -f $HOME/.zshrc ]
 then
 	PROFILE_FILE=$HOME/.zshrc
@@ -57,7 +69,7 @@ check_pip () {
 
 install_pipenv () {
 	echo "Installing pipenv.."
-	python -m pip install --user pipenv
+	$PYTHON -m pip install --user pipenv
 }
 
 create_pipfile () {
@@ -75,8 +87,8 @@ EOF
 install_trail () {
 	OLD_DIR=$(pwd)
 	mkdir -p $BUILD_DIR && cd $BUILD_DIR
-    PYTHON_BINARIES_PATH="$(python -m site --user-base)/bin"
-	$PYTHON_BINARIES_PATH/pipenv install --python $REQUIRED_PYTHON_VERSION trail-core
+    PYTHON_BINARIES_PATH="$($PYTHON -m site --user-base)/bin"
+    $PYTHON_BINARIES_PATH/pipenv install --python $REQUIRED_PYTHON_VERSION trail-core
 	array=("$PIPENV_BASH_LINE_1" "$PIPENV_BASH_LINE_2")
 	for LINE in "${array[@]}"; do
 		if ! grep -Fxq "$LINE" $PROFILE_FILE
