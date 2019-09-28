@@ -14,7 +14,7 @@ elif command -v python2 1>/dev/null
 then
     PYTHON=$(which python2)
 else
-    echo "Python not not found."
+    echo "Python not found."
     exit 1
 fi
 

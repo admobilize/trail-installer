@@ -1,7 +1,7 @@
 # Trail installer scripts
 
 ```
-$ sudo apt install libssl-dev
+$ sudo apt install libssl-dev zlib1g-dev libffi-devel
 
 # On zsh
 $ bash <(curl -fsSL https://raw.githubusercontent.com/matrix-io/trail-installer/master/install.sh) && source ~/.zshrc
