@@ -92,6 +92,7 @@ install_python () {
         exit 1
     fi
     pyenv install -s $REQUIRED_PYTHON_VERSION
+    pyenv global $REQUIRED_PYTHON_VERSION
     pyenv rehash
 }
 
@@ -106,7 +107,7 @@ check_pip () {
 
 install_pipenv () {
 	echo "Installing pipenv.."
-	$PYTHON -m pip install --isolated --no-cache-dir --disable-pip-version-check pipenv
+	$PYTHON -m pip install --force-reinstall --isolated --no-cache-dir --disable-pip-version-check pipenv
 }
 
 create_pipfile () {
