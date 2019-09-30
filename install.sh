@@ -25,14 +25,8 @@ REQUIRED_PYTHON_VERSION_MIN="3.7"
 TRAIL_CONFIG_DIR=$HOME/.config/trailcli
 BUILD_DIR=$TRAIL_CONFIG_DIR/build
 DEBUG_FILE=/tmp/trail-installer.log
-
-MACHINE_UNAME=$(uname -r)
-if [[ $MACHINE_UNAME == *"Microsoft"* ]]
-then
-    MACHINE="Windows"
-else
-    MACHINE="Other"
-fi
+PYENV_ROOT=$HOME/.pyenv
+PYENV_BIN_DIR=$PYENV_ROOT/versions/$REQUIRED_PYTHON_VERSION/bin
 
 if [ -f $HOME/.zshrc ]
 then
@@ -64,7 +58,7 @@ PYENV_BASH_LINE_6="# trail-pyenv-end"
 
 PIPENV_BASH_LINE_1="# trail-pipenv-start"
 PIPENV_BASH_LINE_2="export PIPENV_PIPFILE=$BUILD_DIR/Pipfile"
-PIPENV_BASH_LINE_3='alias trail="pipenv run trail"'
+PIPENV_BASH_LINE_3="alias trail=\"$PYENV_BIN_DIR/pipenv run trail\""
 PIPENV_BASH_LINE_4='# trail-pipenv-end'
 
 install_pyenv () {
@@ -112,7 +106,7 @@ check_pip () {
 
 install_pipenv () {
 	echo "Installing pipenv.."
-	$PYTHON -m pip install --user pipenv
+	$PYTHON -m pip install --isolated --no-cache-dir --disable-pip-version-check pipenv
 }
 
 create_pipfile () {
@@ -132,8 +126,7 @@ EOF
 install_trail () {
 	OLD_DIR=$(pwd)
 	mkdir -p $BUILD_DIR && cd $BUILD_DIR
-    PYTHON_BINARIES_PATH="$($PYTHON -m site --user-base)/bin"
-    $PYTHON_BINARIES_PATH/pipenv install --python $REQUIRED_PYTHON_VERSION trail-core
+    $PYENV_BIN_DIR/pipenv install --python $REQUIRED_PYTHON_VERSION trail-core
 	array=("$PIPENV_BASH_LINE_1" "$PIPENV_BASH_LINE_2" "$PIPENV_BASH_LINE_3" "$PIPENV_BASH_LINE_4")
 	for LINE in "${array[@]}"; do
 		if ! grep -Fxq "$LINE" $PROFILE_FILE
