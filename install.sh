@@ -28,12 +28,16 @@ DEBUG_FILE=/tmp/trail-installer.log
 PYENV_ROOT=$HOME/.pyenv
 PYENV_BIN_DIR=$PYENV_ROOT/versions/$REQUIRED_PYTHON_VERSION/bin
 
-if [ -f $HOME/.zshrc ]
+if [ -n "`$SHELL -c 'echo $ZSH_VERSION'`" ]
 then
 	PROFILE_FILE=$HOME/.zshrc
-elif [ -f $HOME/.bashrc ]
+elif [ -n "`$SHELL -c 'echo $BASH_VERSION'`" ]
 then
 	PROFILE_FILE=$HOME/.bashrc
+else
+    echo "Unsupported shell: $SHELL"
+    echo "Run again on bash or zsh."
+    exit 1
 fi
 
 if [ -z "$PYPI_USERNAME" ]
@@ -146,3 +150,8 @@ PYTHON=$(pyenv which python$REQUIRED_PYTHON_VERSION_MIN)
 install_pipenv
 create_pipfile
 install_trail
+
+echo ""
+echo "Trail installation complete!"
+echo "To start using it right away, run the following command:"
+echo "source $PROFILE_FILE"

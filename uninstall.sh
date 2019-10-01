@@ -4,12 +4,15 @@ TRAIL_CONFIG_DIR=$HOME/.config/trailcli
 REQUIRED_PYTHON_VERSION="3.7.4"
 PYENV_DIR=$HOME/.pyenv
 
-if [ -f $HOME/.zshrc ]
+if [ -n "`$SHELL -c 'echo $ZSH_VERSION'`" ]
 then
 	PROFILE_FILE=$HOME/.zshrc
-elif [ -f $HOME/.bashrc ]
+elif [ -n "`$SHELL -c 'echo $BASH_VERSION'`" ]
 then
 	PROFILE_FILE=$HOME/.bashrc
+else
+    echo "Couldn't find out which shell is used. Run again on bash or zsh."
+    exit 1
 fi
 
 uninstall_pyenv () {
