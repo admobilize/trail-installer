@@ -55,10 +55,8 @@ echo ""
 
 PYENV_BASH_LINE_1="# trail-pyenv-start"
 PYENV_BASH_LINE_2="export PATH=$HOME/.pyenv/bin:\$PATH"
-PYENV_BASH_LINE_3='eval "$(pyenv init -)"'
-PYENV_BASH_LINE_4='eval "$(pyenv virtualenv-init -)"'
-PYENV_BASH_LINE_5="export PYENV_VERSION=$REQUIRED_PYTHON_VERSION"
-PYENV_BASH_LINE_6="# trail-pyenv-end"
+PYENV_BASH_LINE_3="export PYENV_VERSION=$REQUIRED_PYTHON_VERSION"
+PYENV_BASH_LINE_4="# trail-pyenv-end"
 
 PIPENV_BASH_LINE_1="# trail-pipenv-start"
 PIPENV_BASH_LINE_2="export PIPENV_PIPFILE=$BUILD_DIR/Pipfile"
@@ -68,7 +66,7 @@ PIPENV_BASH_LINE_4='# trail-pipenv-end'
 install_pyenv () {
     if [ -d "$HOME/.pyenv/bin" ]
     then
-        export PATH=$HOME/.pyenv/bin:$PATH
+        export PATH=$PYENV_ROOT/bin:$PATH
         eval "$(pyenv init -)"
         eval "$(pyenv virtualenv-init -)"
     fi
@@ -78,7 +76,7 @@ install_pyenv () {
 		curl -L https://raw.githubusercontent.com/matrix-io/trail-installer/master/pyenv-installer.sh | bash 1>$DEBUG_FILE 2>&1
         echo "Done"
 	fi
-	array=("$PYENV_BASH_LINE_1" "$PYENV_BASH_LINE_2" "$PYENV_BASH_LINE_3" "$PYENV_BASH_LINE_4" "$PYENV_BASH_LINE_5" "$PYENV_BASH_LINE_6")
+	array=("$PYENV_BASH_LINE_1" "$PYENV_BASH_LINE_2" "$PYENV_BASH_LINE_3" "$PYENV_BASH_LINE_4")
 	for LINE in "${array[@]}"; do
 		if ! grep -Fxq "$LINE" $PROFILE_FILE
 		then
@@ -131,7 +129,7 @@ EOF
 install_trail () {
 	OLD_DIR=$(pwd)
 	mkdir -p $BUILD_DIR && cd $BUILD_DIR
-    $PYENV_BIN_DIR/pipenv install --python $REQUIRED_PYTHON_VERSION trail-core
+    $PYENV_BIN_DIR/pipenv install --python $PYENV_BIN_DIR/python trail-core
 	array=("$PIPENV_BASH_LINE_1" "$PIPENV_BASH_LINE_2" "$PIPENV_BASH_LINE_3" "$PIPENV_BASH_LINE_4")
 	for LINE in "${array[@]}"; do
 		if ! grep -Fxq "$LINE" $PROFILE_FILE
