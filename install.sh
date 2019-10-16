@@ -73,7 +73,7 @@ install_pyenv () {
 	if ! command -v pyenv 1>/dev/null
 	then
 		echo "Installing pyenv..."
-		curl -L https://raw.githubusercontent.com/matrix-io/trail-installer/master/pyenv-installer.sh | bash 1>$DEBUG_FILE 2>&1
+		curl -L https://raw.githubusercontent.com/admobilize/trail-installer/master/pyenv-installer.sh | bash 1>$DEBUG_FILE 2>&1
         echo "Done"
 	fi
 	array=("$PYENV_BASH_LINE_1" "$PYENV_BASH_LINE_2" "$PYENV_BASH_LINE_3" "$PYENV_BASH_LINE_4")
