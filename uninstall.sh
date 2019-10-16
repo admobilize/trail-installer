@@ -19,27 +19,39 @@ fi
 uninstall_pyenv () {
     if [ -d "$PYENV_DIR" ]
     then
-        rm -rf $PYENV_DIR 1>/dev/null 2>&1
-        echo "pyenv dir deleted."
+        echo "Would you like to remove pyenv? [y/n]"
+        read DEL_PYENV
+        case $DEL_PYENV in
+            y | Y)
+                rm -rf $PYENV_DIR 1>/dev/null 2>&1
+                echo "pyenv dir deleted."
+                ;;
+            *)
+                echo "Skipping pyenv removal."
+                ;;
+        esac
     fi
 }
 
 remove_virtualenv () {
 
-    VIRTUAL_ENV_DIR=$($PYENV_BIN_DIR/pipenv --venv)
-    if [ -d "$VIRTUAL_ENV_DIR" ]
+    if [ -f "$PYENV_BIN_DIR/pipenv" ]
     then
-        rm -rf $VIRTUAL_ENV_DIR
-        echo "virtualenv dir deleted."
+        VIRTUAL_ENV_DIR=$($PYENV_BIN_DIR/pipenv --venv)
+        if [ -d "$VIRTUAL_ENV_DIR" ]
+        then
+            rm -rf $VIRTUAL_ENV_DIR
+            echo "virtualenv dir deleted."
+        fi
     fi
 }
 
 remove_pyenv_source_lines () {
-    sed -i'' '/# trail-pyenv-start/,/# trail-pyenv-end/d' $PROFILE_FILE
+    sed -i.bak '/# trail-pyenv-start/,/# trail-pyenv-end/d' $PROFILE_FILE && rm $PROFILE_FILE.bak
 }
 
 remove_pipenv_source_lines () {
-    sed -i'' '/# trail-pipenv-start/,/# trail-pipenv-end/d' $PROFILE_FILE
+    sed -i.bak '/# trail-pipenv-start/,/# trail-pipenv-end/d' $PROFILE_FILE && rm $PROFILE_FILE.bak
 }
 
 remove_trail_config () {
@@ -54,14 +66,4 @@ remove_virtualenv
 remove_pipenv_source_lines
 remove_trail_config
 remove_pyenv_source_lines
-
-echo "Would you like to remove pyenv? [y/n]"
-read DEL_PYENV
-case $DEL_PYENV in
-    y | Y)
-        uninstall_pyenv
-        ;;
-    *)
-        echo "Skipping pyenv removal."
-        ;;
-esac
+uninstall_pyenv
