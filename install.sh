@@ -16,13 +16,14 @@ fi
 REQUIRED_PYTHON_VERSION="3.7.4"
 REQUIRED_PYTHON_VERSION_MIN="3.7"
 TRAIL_CONFIG_DIR=$HOME/.config/trailcli
-PIPCONF_FILE=$HOME/.config/pip/pip.conf
 BUILD_DIR=$TRAIL_CONFIG_DIR/build
 DEBUG_FILE=/tmp/trail-installer.log
 # Reuse the default PYENV_ROOT if exists
 PYENV_ROOT=${PYENV_ROOT:-$HOME/.pyenv}
 TRAIL_PYENV=${TRAIL_PYENV:-trail-cli}
-PYENV_TRAIL_BIN_DIR=$PYENV_ROOT/versions/$TRAIL_PYENV/bin
+PYENV_TRAIL_DIR=$PYENV_ROOT/versions/$TRAIL_PYENV
+PYENV_TRAIL_BIN_DIR=$PYENV_TRAIL_DIR/bin
+PIPCONF_FILE=$PYENV_TRAIL_DIR/pip.conf
 
 
 # Check if admobilize pypi username was passed
@@ -61,8 +62,6 @@ PYENV_BASH_LINE_1="# trail-pyenv-start"
 PYENV_BASH_LINE_2="alias trail=\"$PYENV_TRAIL_BIN_DIR/trail\""
 PYENV_BASH_LINE_3="export PATH=\"$PYENV_ROOT/bin:\$PATH\""
 PYENV_BASH_LINE_4="# trail-pyenv-end"
-PIPCONF_BASH_LINE_1="[global]"
-PIPCONF_BASH_LINE_2="index-url = https://$PYPI_USERNAME:$PYPI_PASSWORD@pypi.admobilize.com"
 
 install_pyenv () {
     if [ -d "$PYENV_ROOT/bin" ]; then
@@ -101,13 +100,6 @@ install_python () {
     pyenv rehash
 }
 
-check_pip () {
-    if ! command -v pip 1>/dev/null; then
-        echo "Pip not available. Please, install pip and run this script again."
-        exit 1
-    fi
-}
-
 create_trail_pyenv () {
     if pyenv versions | grep -q "$TRAIL_PYENV"; then
         echo "pyenv version ${TRAIL_PYENV} exists, re-create ?"
@@ -128,17 +120,13 @@ add_admob_repo_to_pipconf () {
         mkdir -p $PIPCONF_DIR
     fi
 
-    if [ ! -f "$PIPCONF_FILE" ]; then
-        touch $PIPCONF_FILE
-    fi
-
-    array=("$PIPCONF_BASH_LINE_1" "$PIPCONF_BASH_LINE_2")
-    for LINE in "${array[@]}"; do
-        if ! grep -Fxq "$LINE" $PIPCONF_FILE; then
-            echo "Adding $LINE to $PIPCONF_FILE"
-            echo -e "$LINE" >> $PIPCONF_FILE
-        fi
-    done
+	cat > $PIPCONF_FILE <<- EOF
+	[global]
+	timeout = 60
+	index-url = https://$PYPI_USERNAME:$PYPI_PASSWORD@pypi.admobilize.com
+EOF
+    unset PYPI_USERNAME
+    unset PYPI_PASSWORD
 }
 
 install_trail () {
