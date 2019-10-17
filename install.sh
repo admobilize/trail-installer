@@ -113,7 +113,7 @@ create_trail_pyenv () {
         echo "pyenv version ${TRAIL_PYENV} exists, re-create ?"
         read YES_NO
         if [ "$YES_NO" = "y" ]; then
-            pyenv virtualenv-delete $TRAIL_PYENV
+            pyenv virtualenv-delete -f $TRAIL_PYENV
             pyenv virtualenv $REQUIRED_PYTHON_VERSION trail-cli
         fi
     else
