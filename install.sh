@@ -59,7 +59,7 @@ echo ""
 
 PYENV_BASH_LINE_1="# trail-pyenv-start"
 PYENV_BASH_LINE_2="alias trail=\"$PYENV_TRAIL_BIN_DIR/trail\""
-PYENV_BASH_LINE_3="PATH=\"$PYENV_ROOT/bin:$PATH\""
+PYENV_BASH_LINE_3="export PATH=\"$PYENV_ROOT/bin:\$PATH\""
 PYENV_BASH_LINE_4="# trail-pyenv-end"
 PIPCONF_BASH_LINE_1="[global]"
 PIPCONF_BASH_LINE_2="index-url = https://$PYPI_USERNAME:$PYPI_PASSWORD@pypi.admobilize.com"
@@ -113,7 +113,7 @@ create_trail_pyenv () {
         echo "pyenv version ${TRAIL_PYENV} exists, re-create ?"
         read YES_NO
         if [ "$YES_NO" = "y" ]; then
-            pyenv remove $TRAIL_PYENV
+            pyenv virtualenv-delete $TRAIL_PYENV
             pyenv virtualenv $REQUIRED_PYTHON_VERSION trail-cli
         fi
     else
@@ -143,7 +143,8 @@ add_admob_repo_to_pipconf () {
 
 install_trail () {
     pyenv activate $TRAIL_PYENV
-    $PYENV_TRAIL_BIN_DIR/pip install trail-core
+    $PYENV_TRAIL_BIN_DIR/pip install --upgrade pip
+    $PYENV_TRAIL_BIN_DIR/pip install --force-reinstall --upgrade trail-core
     echo "Done"
 }
 
