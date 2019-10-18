@@ -4,6 +4,7 @@ TRAIL_CONFIG_DIR=$HOME/.config/trailcli
 REQUIRED_PYTHON_VERSION="3.7.4"
 PYENV_DIR=$HOME/.pyenv
 PYENV_BIN_DIR=$PYENV_DIR/versions/$REQUIRED_PYTHON_VERSION/bin
+TRAIL_PYENV=${TRAIL_PYENV:-trail-cli}
 
 if [ -n "`$SHELL -c 'echo $ZSH_VERSION'`" ]
 then
@@ -34,24 +35,15 @@ uninstall_pyenv () {
 }
 
 remove_virtualenv () {
-
-    if [ -f "$PYENV_BIN_DIR/pipenv" ]
+    if command -v pyenv 1>/dev/null
     then
-        VIRTUAL_ENV_DIR=$($PYENV_BIN_DIR/pipenv --venv)
-        if [ -d "$VIRTUAL_ENV_DIR" ]
-        then
-            rm -rf $VIRTUAL_ENV_DIR
-            echo "virtualenv dir deleted."
-        fi
+        pyenv virtualenv-delete -f $TRAIL_PYENV
+        echo "$TRAIL_PYENV virtualenv deleted."
     fi
 }
 
 remove_pyenv_source_lines () {
     sed -i.bak '/# trail-pyenv-start/,/# trail-pyenv-end/d' $PROFILE_FILE && rm $PROFILE_FILE.bak
-}
-
-remove_pipenv_source_lines () {
-    sed -i.bak '/# trail-pipenv-start/,/# trail-pipenv-end/d' $PROFILE_FILE && rm $PROFILE_FILE.bak
 }
 
 remove_trail_config () {
@@ -63,7 +55,6 @@ remove_trail_config () {
 }
 
 remove_virtualenv
-remove_pipenv_source_lines
 remove_trail_config
 remove_pyenv_source_lines
 uninstall_pyenv
